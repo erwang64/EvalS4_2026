@@ -12,9 +12,9 @@ public class SpaceSuit {
     private int spaceSuitId;
 
     @Column(name = "size", nullable = false)
-    private int size; // Taille
+    private int size; 
 
     @Column(name = "model", nullable = false)
-    private String model; // modele
+    private String model; 
 
 }

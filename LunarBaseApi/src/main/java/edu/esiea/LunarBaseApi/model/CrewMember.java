@@ -35,7 +35,7 @@ public class CrewMember {
 	private CrewrRole crewRole;
 	
 	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "space_suit_id", referencedColumnName = "id")
+    @JoinColumn(name = "space_suit_id", referencedColumnName = "SpaceSuitId")
     private SpaceSuit spaceSuit;
 
 }
