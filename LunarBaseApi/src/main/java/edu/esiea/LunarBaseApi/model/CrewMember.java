@@ -38,4 +38,46 @@ public class CrewMember {
     @JoinColumn(name = "space_suit_id", referencedColumnName = "SpaceSuitId")
     private SpaceSuit spaceSuit;
 
+	public int getCrewMemberId() {
+		return crewMemberId;
+	}
+
+	public void setCrewMemberId(int crewMemberId) {
+		this.crewMemberId = crewMemberId;
+	}
+
+	public String getFirstName() {
+		return FirstName;
+	}
+
+	public void setFirstName(String firstName) {
+		FirstName = firstName;
+	}
+
+	public String getLastName() {
+		return LastName;
+	}
+
+	public void setLastName(String lastName) {
+		LastName = lastName;
+	}
+
+	public CrewrRole getCrewRole() {
+		return crewRole;
+	}
+
+	public void setCrewRole(CrewrRole crewRole) {
+		this.crewRole = crewRole;
+	}
+
+	public SpaceSuit getSpaceSuit() {
+		return spaceSuit;
+	}
+
+	public void setSpaceSuit(SpaceSuit spaceSuit) {
+		this.spaceSuit = spaceSuit;
+	}
+	
+	
+
 }

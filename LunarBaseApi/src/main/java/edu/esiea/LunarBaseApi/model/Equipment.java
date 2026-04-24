@@ -26,4 +26,31 @@ public class Equipment {
 	@Column(name = "EquipmentStatus", nullable = false)
 	private EquipmentStatus equipmentStatus;
 
+	public int getEquipmentId() {
+		return equipmentId;
+	}
+
+	public void setEquipmentId(int equipmentId) {
+		this.equipmentId = equipmentId;
+	}
+
+	public String getNameEquiment() {
+		return NameEquiment;
+	}
+
+	public void setNameEquiment(String nameEquiment) {
+		NameEquiment = nameEquiment;
+	}
+
+	public EquipmentStatus getEquipmentStatus() {
+		return equipmentStatus;
+	}
+
+	public void setEquipmentStatus(EquipmentStatus equipmentStatus) {
+		this.equipmentStatus = equipmentStatus;
+	}
+	
+	
+	
+
 }

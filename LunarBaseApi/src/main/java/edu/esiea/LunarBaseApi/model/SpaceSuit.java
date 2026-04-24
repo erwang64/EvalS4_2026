@@ -15,6 +15,33 @@ public class SpaceSuit {
     private int size; 
 
     @Column(name = "model", nullable = false)
-    private String model; 
+    private String model;
+
+	public int getSpaceSuitId() {
+		return spaceSuitId;
+	}
+
+	public void setSpaceSuitId(int spaceSuitId) {
+		this.spaceSuitId = spaceSuitId;
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	} 
+    
+    
+    
 
 }
