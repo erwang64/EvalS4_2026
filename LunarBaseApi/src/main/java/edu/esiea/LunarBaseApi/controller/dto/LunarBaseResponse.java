@@ -6,6 +6,7 @@ public class LunarBaseResponse {
 	
 	private int lunarBaseId;
     private String name;
+    private String sector;
     private int posX;
     private int posY;
     private int maximalCapacity;
@@ -55,6 +56,14 @@ public class LunarBaseResponse {
 	public void setCrewIds(List<Integer> crewIds) {
 		this.crewIds = crewIds;
 	}
+	public String getSector() {
+		return sector;
+	}
+	public void setSector(String sector) {
+		this.sector = sector;
+	}
+	
+	
     
     
     

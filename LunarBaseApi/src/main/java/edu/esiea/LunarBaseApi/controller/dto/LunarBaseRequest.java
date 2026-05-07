@@ -6,6 +6,7 @@ public class LunarBaseRequest extends AbstractRequest{
 	
 	
 	private String name;
+	private String sector;
     private Integer posX;
     private Integer posY;
     private Integer maximalCapacity;
@@ -39,6 +40,17 @@ public class LunarBaseRequest extends AbstractRequest{
 	public void setMaximalCapacity(Integer maximalCapacity) {
 		this.maximalCapacity = maximalCapacity;
 	}
+
+	public String getSector() {
+		return sector;
+	}
+
+
+	public void setSector(String sector) {
+		this.sector = sector;
+	}
+	
+	
     
     
 

@@ -5,12 +5,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import edu.esiea.LunarBaseApi.controller.dto.ErrorResponse;
 import edu.esiea.LunarBaseApi.controller.dto.error.EndPointException;
 import edu.esiea.LunarBaseApi.controller.dto.mapper.ErrorMapper;
 
+
+@ControllerAdvice
 public class ErrorHandler {
 	
 	// Le Logger permet d'écrire les erreurs dans la console de votre serveur (très utile pour débugger)

@@ -14,6 +14,7 @@ public class LunarBaseMapper {
 	public static LunarBase toEntity(LunarBaseRequest dto) {
 		LunarBase base = new LunarBase();
 		if (dto.getName() != null)            { base.setName(dto.getName()); }
+		if (dto.getSector() != null)          { base.setSector(dto.getSector()); }
 		if (dto.getPosX() != null)            { base.setPosX(dto.getPosX()); }
 		if (dto.getPosY() != null)            { base.setPosY(dto.getPosY()); }
 		if (dto.getMaximalCapacity() != null) { base.setMaximalCapacity(dto.getMaximalCapacity()); }
@@ -23,6 +24,7 @@ public class LunarBaseMapper {
 	// 2. DTO entrant -> Entité existante (Pour la mise à jour PATCH)
 	public static LunarBase patchWithRequest(LunarBaseRequest dto, LunarBase origin) {
 		if (dto.getName() != null)            { origin.setName(dto.getName()); }
+		if (dto.getSector() != null)          { origin.setSector(dto.getSector()); }
 		if (dto.getPosX() != null)            { origin.setPosX(dto.getPosX()); }
 		if (dto.getPosY() != null)            { origin.setPosY(dto.getPosY()); }
 		if (dto.getMaximalCapacity() != null) { origin.setMaximalCapacity(dto.getMaximalCapacity()); }
@@ -36,6 +38,7 @@ public class LunarBaseMapper {
 		// Attention : Utilise getLunarBaseId() ou getId() selon ce que tu as mis dans ton modèle
 		ret.setLunarBaseId(base.getLunarBaseId()); 
 		ret.setName(base.getName());
+		ret.setSector(base.getSector());
 		ret.setPosX(base.getPosX());
 		ret.setPosY(base.getPosY());
 		ret.setMaximalCapacity(base.getMaximalCapacity());

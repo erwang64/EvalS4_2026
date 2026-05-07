@@ -1,9 +1,12 @@
 package edu.esiea.LunarBaseApi.service;
 
+import org.springframework.stereotype.Service;
+
 import edu.esiea.LunarBaseApi.exception.ServiceException;
 import edu.esiea.LunarBaseApi.model.LunarBase;
 import edu.esiea.LunarBaseApi.repository.LunarBaseRepository;
 
+@Service
 public class LunarBaseService {
 	
 	private final LunarBaseRepository repo;
