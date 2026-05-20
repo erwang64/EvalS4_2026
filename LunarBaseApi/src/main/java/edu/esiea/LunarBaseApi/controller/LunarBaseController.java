@@ -4,9 +4,11 @@ import java.net.URI;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,6 +92,40 @@ public class LunarBaseController {
 		
 		// 4. On renvoie la liste avec un code 200 OK
 		return ResponseEntity.ok(responseList);
+	}
+	
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<LunarBaseResponse> updateLunarBase(
+			@PathVariable("id") int id, 
+			@RequestBody LunarBaseRequest request) throws EndPointException {
+		
+		try {
+			// 1. On traduit le JSON reçu en Entité "brouillon"
+			LunarBase baseDetails = LunarBaseMapper.toEntity(request);
+			
+			// 2. On envoie l'ID et les nouvelles données au Service
+			LunarBase updatedBase = service.updateLunarBase(id, baseDetails);
+			
+			// 3. On traduit le résultat et on renvoie un 200 OK
+			return ResponseEntity.ok(LunarBaseMapper.toResponse(updatedBase));
+			
+		} catch (ServiceException e) {
+			// Si le service refuse (ID inconnu ou nom déjà pris)
+			throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.LUNAR_BASE, e, id);
+		}
+	}
+	
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteLunarBase(@PathVariable("id") int id) throws EndPointException {
+		try {
+			service.deleteLunarBase(id);
+			return ResponseEntity.noContent().build();
+			
+		} catch (ServiceException e) {
+			throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e, id);
+		}
 	}
     
 	
