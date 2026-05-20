@@ -15,17 +15,15 @@ public class LunarBaseService {
 		this.repo = repo;
 	}
 	
-	/**
-	 * Crée une nouvelle base lunaire après avoir vérifié les règles métier.
-	 */
-	public LunarBase createLunarBase(LunarBase baseToCreate) throws ServiceException {
+	//Crée une base
+	public LunarBase createLunarBase(final LunarBase baseToCreate) throws ServiceException {
 		
 		if (baseToCreate.getLunarBaseId() > 0) {
 			throw new ServiceException("Impossible de créer un base dont l'ID est défini.");
 		}
 		
 		if (repo.findByName(baseToCreate.getName()).isPresent()) {
-			throw new ServiceException("Erreur : Une base nommée '" + baseToCreate.getName() + "' existe déjà.");
+			throw new ServiceException("Erreur : Une base avec le meme nom  existe déjà.");
 		}
 		
 		// 3. Règle métier : la position (X, Y) doit être libre
@@ -35,6 +33,18 @@ public class LunarBaseService {
 		
 		// Si toutes les règles sont respectées, on sauvegarde
 		return this.repo.save(baseToCreate);
+	}
+	
+	
+	// Get by ID
+	public LunarBase getBaseById(final int id) throws ServiceException {
+	    return repo.findById(id)
+	        .orElseThrow(() -> new ServiceException("La base est introuvable sur la Lune !"));
+	}
+	
+	// Get all base
+	public Iterable<LunarBase> getAllBases() {
+		return repo.findAll();
 	}
 
 }
