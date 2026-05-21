@@ -26,19 +26,15 @@ public class UserService {
         }
         String encryptedPassword = passwordEncoder.encode(newUser.getPassword());
         newUser.setPassword(encryptedPassword);
-
-        // Par défaut, on peut attribuer le rôle USER s'il n'est pas défini
         if (newUser.getRole() == null) {
             newUser.setRole(Role.USER);
         }
-
-        // On sauvegarde l'utilisateur en BDD
         return userRepository.save(newUser);
     }
 
     public User loadUserByUsername(String username) throws ServiceException {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new ServiceException("Utilisateur '" + username + "' introuvable."));
+                .orElseThrow(() -> new ServiceException("Utilisateur introuvable."));
     }
     
 }
