@@ -69,17 +69,12 @@ public class LunarBaseService {
 		// 4. On sauvegarde les changements
 		return repo.save(existingBase);
 	}
-	
-	//modification avec path
-	
-	
-	
+		
 	
 	//Suprime une base
 	public void deleteLunarBase(int id) throws ServiceException {
-		// 1. On vérifie si la base existe
 		if (!repo.existsById(id)) {
-			throw new ServiceException("Impossible de supprimer n'existe pas ou a déjà été détruite.");
+			throw new ServiceException("Impossible de supprimer n'existe pas");
 		}
 		repo.deleteById(id);
 	}

@@ -72,7 +72,7 @@ public class LunarBaseController {
 	        
 	    } catch (ServiceException e) {
 	        // Si l'ID n'existe pas, on renvoie une 404 (Not Found)
-	        throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e, id);
+	        throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e);
 	    }
 	}
 	
@@ -112,7 +112,7 @@ public class LunarBaseController {
 			
 		} catch (ServiceException e) {
 			// Si le service refuse (ID inconnu ou nom déjà pris)
-			throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.LUNAR_BASE, e, id);
+			throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.LUNAR_BASE, e);
 		}
 	}
 	
@@ -124,7 +124,7 @@ public class LunarBaseController {
 			return ResponseEntity.noContent().build();
 			
 		} catch (ServiceException e) {
-			throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e, id);
+			throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e);
 		}
 	}
     
