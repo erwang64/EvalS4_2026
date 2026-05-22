@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+import org.springframework.security.access.AccessDeniedException;
 import edu.esiea.LunarBaseApi.controller.dto.ErrorResponse;
 import edu.esiea.LunarBaseApi.controller.dto.error.EndPointException;
+import edu.esiea.LunarBaseApi.controller.dto.error.ResourceType;
 import edu.esiea.LunarBaseApi.controller.dto.mapper.ErrorMapper;
 
 
@@ -35,10 +36,6 @@ public class ErrorHandler {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resp);
 		}
 		
-		/* * 3. Attrape les erreurs de sécurité (À décommenter quand vous ferez Spring Security)
-		 *
-		import org.springframework.security.access.AccessDeniedException;
-		
 		@ExceptionHandler(AccessDeniedException.class)
 		public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e){
 			ErrorResponse resp = new ErrorResponse();
@@ -47,6 +44,5 @@ public class ErrorHandler {
 			LOGGER.error("Access denied : ".concat(e.getMessage()));
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resp);
 		}
-		*/
 
 }
