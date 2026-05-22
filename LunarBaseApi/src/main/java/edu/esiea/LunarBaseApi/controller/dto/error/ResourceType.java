@@ -4,5 +4,6 @@ public enum ResourceType {
 	LUNAR_BASE,
 	CREW_MEMBER,
 	SPACE_SUIT,
-	EQUIPMENT
+	EQUIPMENT,
+	USER
 }

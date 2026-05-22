@@ -4,6 +4,7 @@ import java.net.URI;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,7 @@ public class LunarBaseController {
 		this.service = service;
 	}
 	
-	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
     public ResponseEntity<LunarBaseResponse> createLunarBase(@RequestBody LunarBaseRequest request) throws EndPointException {
         
@@ -57,7 +58,7 @@ public class LunarBaseController {
         return ResponseEntity.created(uri).body(LunarBaseMapper.toResponse(baseToCreate));
     }
 	
-	
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
 	public ResponseEntity<LunarBaseResponse> getLunarBaseById(@PathVariable("id") int id) throws EndPointException {
 	    try {
@@ -76,7 +77,7 @@ public class LunarBaseController {
 	    }
 	}
 	
-	
+	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/all")
 	public ResponseEntity<java.util.List<LunarBaseResponse>> getAllLunarBases() {
 		// 1. On récupère toutes les entités
@@ -94,7 +95,7 @@ public class LunarBaseController {
 		return ResponseEntity.ok(responseList);
 	}
 	
-	
+	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
 	public ResponseEntity<LunarBaseResponse> updateLunarBase(
 			@PathVariable("id") int id, 
@@ -116,7 +117,7 @@ public class LunarBaseController {
 		}
 	}
 	
-	
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteLunarBase(@PathVariable("id") int id) throws EndPointException {
 		try {
