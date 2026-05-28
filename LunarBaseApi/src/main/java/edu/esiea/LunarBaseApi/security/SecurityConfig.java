@@ -35,7 +35,8 @@ public class SecurityConfig {
 		http.cors(Customizer.withDefaults()).csrf(csrf -> csrf.disable())
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/users/login", "/api/users/register").permitAll() 
+                        .requestMatchers("/api/users/login", "/api/users/register").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/webjars/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -52,6 +53,8 @@ public class SecurityConfig {
 	public org.springframework.security.crypto.password.PasswordEncoder passwordEncoder() {
 		return new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder();
 	}
+	
+	
 
 	
 	@Bean

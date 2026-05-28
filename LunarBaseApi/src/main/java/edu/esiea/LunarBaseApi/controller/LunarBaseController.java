@@ -23,6 +23,10 @@ import edu.esiea.LunarBaseApi.exception.ServiceException;
 import edu.esiea.LunarBaseApi.model.LunarBase;
 import edu.esiea.LunarBaseApi.service.LunarBaseService;
 
+// Imports Swagger / OpenAPI ajoutés
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 @RestController
 @RequestMapping("/api/lunar-bases")
 public class LunarBaseController {
@@ -35,6 +39,8 @@ public class LunarBaseController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping
+	@Operation(summary = "Création d'une base lunaire", description = "Accessible aux rôles : ADMIN")
+	@SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<LunarBaseResponse> createLunarBase(@RequestBody LunarBaseRequest request) throws EndPointException {
         
         // 1. Traduction
@@ -60,6 +66,8 @@ public class LunarBaseController {
 	
 	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
+	@Operation(summary = "Récupérer une base lunaire par son ID", description = "Accessible aux rôles : USER, ADMIN")
+	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<LunarBaseResponse> getLunarBaseById(@PathVariable("id") int id) throws EndPointException {
 	    try {
 	        // 1. On demande au service
@@ -79,6 +87,8 @@ public class LunarBaseController {
 	
 	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/all")
+	@Operation(summary = "Récupérer toutes les bases lunaires", description = "Accessible aux rôles : USER, ADMIN")
+	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<java.util.List<LunarBaseResponse>> getAllLunarBases() {
 		// 1. On récupère toutes les entités
 		Iterable<LunarBase> bases = service.getAllBases();
@@ -97,6 +107,8 @@ public class LunarBaseController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@PutMapping("/{id}")
+	@Operation(summary = "Mise à jour d'une base lunaire", description = "Accessible aux rôles : ADMIN")
+	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<LunarBaseResponse> updateLunarBase(
 			@PathVariable("id") int id, 
 			@RequestBody LunarBaseRequest request) throws EndPointException {
@@ -119,6 +131,8 @@ public class LunarBaseController {
 	
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Suppression d'une base lunaire", description = "Accessible aux rôles : ADMIN")
+	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<Void> deleteLunarBase(@PathVariable("id") int id) throws EndPointException {
 		try {
 			service.deleteLunarBase(id);
@@ -128,8 +142,5 @@ public class LunarBaseController {
 			throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e);
 		}
 	}
-    
-	
-	
 
 }

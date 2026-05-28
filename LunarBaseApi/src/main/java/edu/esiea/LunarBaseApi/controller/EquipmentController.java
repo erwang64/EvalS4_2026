@@ -13,6 +13,8 @@ import edu.esiea.LunarBaseApi.controller.dto.EquipmentResponse;
 import edu.esiea.LunarBaseApi.controller.dto.mapper.EquipmentMapper;
 import edu.esiea.LunarBaseApi.model.Equipment;
 import edu.esiea.LunarBaseApi.service.EquipmentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
 @RestController
 @RequestMapping("/api/equipments")
@@ -24,6 +26,8 @@ public class EquipmentController {
         this.equipmentService = equipmentService;
     }
 
+    @Operation(summary = "Création d'un Equipement", description = "Accessible aux rôles : USER, ADMIN")
+    @SecurityRequirement(name = "bearerAuth")
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<EquipmentResponse> createEquipment(@RequestBody EquipmentRequest request) throws Exception {

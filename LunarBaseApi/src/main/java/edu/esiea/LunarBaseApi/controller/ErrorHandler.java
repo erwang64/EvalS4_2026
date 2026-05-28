@@ -40,7 +40,7 @@ public class ErrorHandler {
 		public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e){
 			ErrorResponse resp = new ErrorResponse();
 			resp.setMessage("Access denied");
-			resp.setResourceType(ResourceType.USER); // Ou créer un ResourceType spécifique
+			resp.setResourceType(ResourceType.USER); 
 			LOGGER.error("Access denied : ".concat(e.getMessage()));
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(resp);
 		}
