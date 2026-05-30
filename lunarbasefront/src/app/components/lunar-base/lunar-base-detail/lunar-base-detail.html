@@ -1,0 +1,46 @@
+<div class="container-sm border rounded-3 border-primary-subtle bg-primary-subtle mt-4"
+     style="width: 35%; height: auto">
+    <div class="modal-header">
+        <h5 class="modal-title">Base lunaire</h5>
+    </div>
+    <div class="modal-body">
+        @if (!connected()) {
+        <div class="alert alert-info">Consultation seule — connectez-vous pour modifier cette base.</div>
+        }
+        <form [formGroup]="form" class="container border rounded-3">
+            <label for="name">Nom : </label>
+            <input class="form-control" id="name" type="text" formControlName="name" />
+            @if (form.get('name')?.invalid && form.get('name')?.touched) {
+            <div class="text-danger small">Nom requis (min 2 caractères)</div>
+            }
+            <label for="sector">Secteur : </label>
+            <input class="form-control" id="sector" type="text" formControlName="sector" />
+            @if (form.get('sector')?.invalid && form.get('sector')?.touched) {
+            <div class="text-danger small">Secteur requis</div>
+            }
+            <label for="posX">Position X : </label>
+            <input class="form-control" id="posX" formControlName="posX" type="number" />
+            @if (form.get('posX')?.invalid && form.get('posX')?.touched) {
+            <div class="text-danger small">Position X requise</div>
+            }
+            <label for="posY">Position Y : </label>
+            <input class="form-control" id="posY" formControlName="posY" type="number" />
+            @if (form.get('posY')?.invalid && form.get('posY')?.touched) {
+            <div class="text-danger small">Position Y requise</div>
+            }
+            <label for="maximalCapacity">Capacité maximale : </label>
+            <input class="form-control" id="maximalCapacity" formControlName="maximalCapacity" type="number" />
+            @if (form.get('maximalCapacity')?.invalid && form.get('maximalCapacity')?.touched) {
+            <div class="text-danger small">Capacité requise (min 1)</div>
+            }
+        </form>
+    </div>
+    <div class="modal-footer" style="margin: 10px;">
+        <button type="button" class="btn btn-secondary" (click)="cancel()"> Annuler</button>
+        @if (connected()) {
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid"
+         (click)="validate()">Valider
+        </button>
+        }
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<td>{{ equip.equipmentId }}</td>
+<td class="fw-bold">{{ equip.nameEquiment }}</td>
+<td>
+    @if (equip.equipmentStatus === 'OPERATIONNEL') {
+    <span class="badge bg-success">{{ equip.equipmentStatus }}</span>
+    } @else if (equip.equipmentStatus === 'MAITENANCE') {
+    <span class="badge bg-warning text-dark">{{ equip.equipmentStatus }}</span>
+    } @else {
+    <span class="badge bg-danger">{{ equip.equipmentStatus }}</span>
+    }
+</td>
+@if (connected()) {
+<td>
+    <button type="button" class="btn btn-warning m-2" (click)="editEquipment()">
+        <i class="bi bi-pencil-fill"></i>
+    </button>
+</td>
+<td>
+    <button type="button" class="btn btn-danger m-2" (click)="deleteEquipment()">
+        <i class="bi bi-trash-fill"></i>
+    </button>
+</td>
+}

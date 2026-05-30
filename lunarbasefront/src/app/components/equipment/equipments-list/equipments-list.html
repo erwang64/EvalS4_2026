@@ -1,0 +1,32 @@
+<div class="container-sm border rounded-3 border-danger-subtle bg-warning-subtle text-center mt-4"
+    style="width: 50%; height: auto">
+    <h1 class="title">Liste des équipements</h1>
+    @if (connected()) {
+    <button type="button" class="btn btn-success m-2" (click)="addEquipment()">
+        <i class="bi bi-plus-square"></i> Nouvel équipement
+    </button>
+    }
+</div>
+<div class="container mt-4">
+    <div class="rounded-3 shadow overflow-hidden">
+        <table class="table table-hover table-bordered align-middle mb-0">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Statut</th>
+                    @if (connected()) {
+                    <th>Éditer</th>
+                    <th>Supprimer</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @for (equip of allEquipments(); track equip.equipmentId; let isEven = $even) {
+                <tr app-equipment-list-item [equip]="equip" class="text-center" [class.table-primary]="isEven"
+                    [class.table-info]="!isEven"></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

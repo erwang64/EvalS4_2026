@@ -1,0 +1,32 @@
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">🌙 LunarBase</span>
+        <div class="navbar-nav me-auto">
+            <button type="button" class="btn btn-outline-light btn-sm me-2" (click)="goToBases()">
+                <i class="bi bi-house-fill"></i> Bases
+            </button>
+            @if (connected()) {
+            <button type="button" class="btn btn-outline-light btn-sm me-2" (click)="goToCrew()">
+                <i class="bi bi-people-fill"></i> Équipage
+            </button>
+            <button type="button" class="btn btn-outline-light btn-sm me-2" (click)="goToEquipments()">
+                <i class="bi bi-tools"></i> Équipements
+            </button>
+            }
+        </div>
+        <div class="d-flex align-items-center">
+            @if (connectedUser() == null) {
+            <button type="button" class="btn btn-success btn-sm" (click)="connect()">
+                <i class="bi bi-box-arrow-in-right"></i> Se connecter
+            </button>
+            } @else {
+            <span class="text-light me-3">
+                {{ connectedUser()!.username }} - {{ connectedUser()!.role }}
+            </span>
+            <button type="button" class="btn btn-danger btn-sm" (click)="disconnect()">
+                <i class="bi bi-box-arrow-right"></i> Se déconnecter
+            </button>
+            }
+        </div>
+    </div>
+</nav>

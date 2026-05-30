@@ -51,7 +51,8 @@ public class LunarBaseMapper {
 					crewIds.add(member.getCrewMemberId()); 
 				}
 			}
-			ret.setCrewIds(crewIds); // Assurez-vous d'avoir List<Integer> crewIds dans LunarBaseResponse
+			ret.setCrewIds(crewIds);
+			ret.setCurrentCrewCount(crewIds.size());
 		
 		return ret;
 	}

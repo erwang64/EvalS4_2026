@@ -1,0 +1,23 @@
+<td>{{ member.crewMemberId }}</td>
+<td class="fw-bold">{{ member.firstName }}</td>
+<td>{{ member.lastName }}</td>
+<td>{{ member.crewRole }}</td>
+<td>
+    @if (member.spaceSuit) {
+    {{ member.spaceSuit.model }} (taille {{ member.spaceSuit.size }})
+    } @else {
+    <span class="text-muted">Aucune</span>
+    }
+</td>
+@if (connected()) {
+<td>
+    <button type="button" class="btn btn-warning m-2" (click)="editCrewMember()">
+        <i class="bi bi-pencil-fill"></i>
+    </button>
+</td>
+<td>
+    <button type="button" class="btn btn-danger m-2" (click)="deleteCrewMember()">
+        <i class="bi bi-trash-fill"></i>
+    </button>
+</td>
+}

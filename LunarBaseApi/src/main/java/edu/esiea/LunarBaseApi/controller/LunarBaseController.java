@@ -69,10 +69,8 @@ public class LunarBaseController {
         return ResponseEntity.created(uri).body(LunarBaseMapper.toResponse(baseToCreate));
     }
 	
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/{id}")
-	@Operation(summary = "Récupérer une base lunaire par son ID", description = "Accessible aux rôles : USER, ADMIN")
-	@SecurityRequirement(name = "bearerAuth")
+	@Operation(summary = "Récupérer une base lunaire par son ID", description = "Accessible à tous (lecture seule)")
 	public ResponseEntity<LunarBaseResponse> getLunarBaseById(@PathVariable("id") int id) throws EndPointException {
 	    LOGGER.debug("GET /api/lunar-bases/{}", id);
 	    try {
@@ -93,10 +91,8 @@ public class LunarBaseController {
 	    }
 	}
 	
-	@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 	@GetMapping("/all")
-	@Operation(summary = "Récupérer toutes les bases lunaires", description = "Accessible aux rôles : USER, ADMIN")
-	@SecurityRequirement(name = "bearerAuth")
+	@Operation(summary = "Récupérer toutes les bases lunaires", description = "Accessible à tous (lecture seule)")
 	public ResponseEntity<java.util.List<LunarBaseResponse>> getAllLunarBases() {
 		LOGGER.debug("GET /api/lunar-bases/all");
 		// 1. On récupère toutes les entités

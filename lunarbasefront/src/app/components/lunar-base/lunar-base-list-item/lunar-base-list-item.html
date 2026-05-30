@@ -1,0 +1,24 @@
+<td>{{ base.lunarBaseId }}</td>
+<td class="fw-bold">{{ base.name }}</td>
+<td>{{ base.sector }}</td>
+<td>{{ base.posX }}</td>
+<td>{{ base.posY }}</td>
+<td>{{ base.maximalCapacity }}</td>
+<td>{{ currentCrewCount() }}</td>
+<td>
+    <button type="button" class="btn btn-info m-2" (click)="viewBase()">
+        <i class="bi bi-eye-fill"></i>
+    </button>
+</td>
+@if (connected()) {
+<td>
+    <button type="button" class="btn btn-warning m-2" (click)="editBase()">
+        <i class="bi bi-pencil-fill"></i>
+    </button>
+</td>
+<td>
+    <button type="button" class="btn btn-danger m-2" (click)="deleteBase()">
+        <i class="bi bi-trash-fill"></i>
+    </button>
+</td>
+}

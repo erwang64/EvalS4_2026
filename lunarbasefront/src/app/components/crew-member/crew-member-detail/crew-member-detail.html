@@ -1,0 +1,64 @@
+<div class="container-sm border rounded-3 border-primary-subtle bg-primary-subtle mt-4"
+     style="width: 35%; height: auto">
+    <div class="modal-header">
+        <h5 class="modal-title">Membre d'équipage</h5>
+    </div>
+    <div class="modal-body">
+        @if (errorMessage()) {
+        <div class="alert alert-danger">{{ errorMessage() }}</div>
+        }
+        <form [formGroup]="form" class="container border rounded-3">
+            <label for="firstName">Prénom : </label>
+            <input class="form-control" id="firstName" type="text" formControlName="firstName" />
+            @if (form.get('firstName')?.invalid && form.get('firstName')?.touched) {
+            <div class="text-danger small">Prénom requis (min 2 caractères)</div>
+            }
+            <label for="lastName">Nom : </label>
+            <input class="form-control" id="lastName" type="text" formControlName="lastName" />
+            @if (form.get('lastName')?.invalid && form.get('lastName')?.touched) {
+            <div class="text-danger small">Nom requis (min 2 caractères)</div>
+            }
+            <label for="crewRole">Rôle : </label>
+            <select class="form-select" id="crewRole" formControlName="crewRole">
+                <option value="">-- Choisir un rôle --</option>
+                @for (role of crewRoles; track role) {
+                <option [value]="role">{{ role }}</option>
+                }
+            </select>
+            @if (form.get('crewRole')?.invalid && form.get('crewRole')?.touched) {
+            <div class="text-danger small">Rôle requis</div>
+            }
+            <label for="lunarBaseId">Base lunaire : </label>
+            <select class="form-select" id="lunarBaseId" formControlName="lunarBaseId">
+                <option value="">-- Choisir une base --</option>
+                @for (base of allBases(); track base.lunarBaseId) {
+                <option [value]="base.lunarBaseId" [disabled]="isBaseFull(base)">
+                    {{ base.name }} ({{ currentCrewCount(base) }}/{{ base.maximalCapacity }})
+                    @if (isBaseFull(base)) { — complète }
+                </option>
+                }
+            </select>
+            @if (form.get('lunarBaseId')?.invalid && form.get('lunarBaseId')?.touched) {
+            <div class="text-danger small">Base lunaire requise</div>
+            }
+            <hr />
+            <h6>Combinaison spatiale</h6>
+            <label for="spaceSuitSize">Taille : </label>
+            <input class="form-control" id="spaceSuitSize" formControlName="spaceSuitSize" type="number" />
+            @if (form.get('spaceSuitSize')?.invalid && form.get('spaceSuitSize')?.touched) {
+            <div class="text-danger small">Taille requise (min 1)</div>
+            }
+            <label for="spaceSuitModel">Modèle : </label>
+            <input class="form-control" id="spaceSuitModel" type="text" formControlName="spaceSuitModel" />
+            @if (form.get('spaceSuitModel')?.invalid && form.get('spaceSuitModel')?.touched) {
+            <div class="text-danger small">Modèle requis</div>
+            }
+        </form>
+    </div>
+    <div class="modal-footer" style="margin: 10px;">
+        <button type="button" class="btn btn-secondary" (click)="cancel()"> Annuler</button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid"
+         (click)="validate()">Valider
+        </button>
+    </div>
+</div>

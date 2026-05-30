@@ -1,0 +1,26 @@
+<div class="container-sm border rounded-3 border-primary-subtle bg-primary-subtle mt-4"
+     style="width: 25%; height: auto">
+    <div class="modal-header">
+        <h5 class="modal-title">Connexion</h5>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="form" class="container border rounded-3">
+            <label for="username">Identifiant : </label>
+            <input class="form-control" id="username" type="text" formControlName="username" />
+            @if (form.get('username')?.invalid && form.get('username')?.touched) {
+            <div class="text-danger small">Identifiant requis (min 3 caractères)</div>
+            }
+            <label for="password">Mot de passe : </label>
+            <input class="form-control" id="password" type="password" formControlName="password" />
+            @if (form.get('password')?.invalid && form.get('password')?.touched) {
+            <div class="text-danger small">Mot de passe requis (min 4 caractères)</div>
+            }
+        </form>
+    </div>
+    <div class="modal-footer" style="margin: 10px;">
+        <button type="button" class="btn btn-secondary" (click)="cancel()"> Annuler</button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid"
+         (click)="validate()">Valider
+        </button>
+    </div>
+</div>

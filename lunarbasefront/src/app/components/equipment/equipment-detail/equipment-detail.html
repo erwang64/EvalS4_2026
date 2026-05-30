@@ -1,0 +1,41 @@
+<div class="container-sm border rounded-3 border-primary-subtle bg-primary-subtle mt-4"
+     style="width: 35%; height: auto">
+    <div class="modal-header">
+        <h5 class="modal-title">Équipement</h5>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="form" class="container border rounded-3">
+            <label for="nameEquiment">Nom de l'équipement : </label>
+            <input class="form-control" id="nameEquiment" type="text" formControlName="nameEquiment" />
+            @if (form.get('nameEquiment')?.invalid && form.get('nameEquiment')?.touched) {
+            <div class="text-danger small">Nom requis (min 2 caractères)</div>
+            }
+            <label for="equipmentStatus">Statut : </label>
+            <select class="form-select" id="equipmentStatus" formControlName="equipmentStatus">
+                <option value="">-- Choisir un statut --</option>
+                @for (status of equipmentStatuses; track status) {
+                <option [value]="status">{{ status }}</option>
+                }
+            </select>
+            @if (form.get('equipmentStatus')?.invalid && form.get('equipmentStatus')?.touched) {
+            <div class="text-danger small">Statut requis</div>
+            }
+            <label for="lunarBaseId">Base lunaire : </label>
+            <select class="form-select" id="lunarBaseId" formControlName="lunarBaseId">
+                <option value="">-- Choisir une base --</option>
+                @for (base of allBases(); track base.lunarBaseId) {
+                <option [value]="base.lunarBaseId">{{ base.name }}</option>
+                }
+            </select>
+            @if (form.get('lunarBaseId')?.invalid && form.get('lunarBaseId')?.touched) {
+            <div class="text-danger small">Base lunaire requise</div>
+            }
+        </form>
+    </div>
+    <div class="modal-footer" style="margin: 10px;">
+        <button type="button" class="btn btn-secondary" (click)="cancel()"> Annuler</button>
+        <button type="button" class="btn btn-primary" [disabled]="form.invalid"
+         (click)="validate()">Valider
+        </button>
+    </div>
+</div>
