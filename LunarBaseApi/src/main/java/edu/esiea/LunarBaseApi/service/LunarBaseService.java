@@ -9,6 +9,8 @@ import edu.esiea.LunarBaseApi.repository.LunarBaseRepository;
 @Service
 public class LunarBaseService {
 	
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(LunarBaseService.class);
+	
 	private final LunarBaseRepository repo;
 	
 	public LunarBaseService( LunarBaseRepository repo) {
@@ -17,6 +19,7 @@ public class LunarBaseService {
 	
 	//Crée une base
 	public LunarBase createLunarBase(final LunarBase baseToCreate) throws ServiceException {
+		LOGGER.debug("createLunarBase");
 		
 		if (baseToCreate.getLunarBaseId() > 0) {
 			throw new ServiceException("Impossible de créer un base dont l'ID est défini.");
@@ -38,17 +41,20 @@ public class LunarBaseService {
 	
 	// Get by ID
 	public LunarBase getBaseById(final int id) throws ServiceException {
+		LOGGER.debug("getBaseById");
 	    return repo.findById(id)
 	        .orElseThrow(() -> new ServiceException("La base est introuvable sur la Lune !"));
 	}
 	
 	// Get all base
 	public Iterable<LunarBase> getAllBases() {
+		LOGGER.debug("getAllBases");
 		return repo.findAll();
 	}
 	
 	// modifier une base 
 	public LunarBase updateLunarBase(int id, LunarBase baseToUpdate) throws ServiceException {
+		LOGGER.debug("updateLunarBase");
 		
 		// 1. On vérifie que la base à modifier existe bien
 		LunarBase existingBase = repo.findById(id)
@@ -73,6 +79,7 @@ public class LunarBaseService {
 	
 	//Suprime une base
 	public void deleteLunarBase(int id) throws ServiceException {
+		LOGGER.debug("deleteLunarBase");
 		if (!repo.existsById(id)) {
 			throw new ServiceException("Impossible de supprimer n'existe pas");
 		}

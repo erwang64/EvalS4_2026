@@ -25,6 +25,8 @@ import edu.esiea.LunarBaseApi.security.service.UserService;
 @RequestMapping("/api/users")
 public class UserController {
 	
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(UserController.class);
+	
 	private final UserService userService;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -38,6 +40,7 @@ public class UserController {
     // --- 1. S'INSCRIRE ---
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@RequestBody UserRequest request) throws Exception {
+        LOGGER.debug("POST /api/users/register");
         // 1. Traduction du DTO en Entité
         User userToCreate = UserMapper.toEntity(request);
         
@@ -45,15 +48,18 @@ public class UserController {
         User createdUser = this.userService.register(userToCreate);
         
         // 3. Traduction de l'Entité en DTO de réponse (pour masquer le mot de passe !)
+        LOGGER.info("Utilisateur {} inscrit (201 CREATED)", createdUser.getUserId());
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toResponse(createdUser));
     }
 
     // --- 2. SE CONNECTER ---
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody UserRequest request) throws EndPointException {
+        LOGGER.debug("POST /api/users/login");
         
         // Vérification avec le DTO Request
         if (request.getUsername() == null || request.getPassword() == null || request.getUsername().isBlank() || request.getPassword().isBlank()) {
+            LOGGER.error("Tentative de connexion sans login ou mot de passe");
             throw new EndPointException(HttpStatus.BAD_REQUEST, "Login ou mot de passe non fourni", ResourceType.USER, null);
         }
 
@@ -64,6 +70,7 @@ public class UserController {
         
         String jwt = this.jwtService.generateToken(userDetails);
 
+        LOGGER.info("Utilisateur {} connecté (204 NO_CONTENT)", request.getUsername());
         return ResponseEntity.noContent()
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt)
                 .build();

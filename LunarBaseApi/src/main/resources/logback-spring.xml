@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <property name="LOG_DIR" value="logs" />
+    <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FICHIER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/lunarbase.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archives/lunarbase-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>100KB</maxFileSize>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <springProfile name="dev">
+        <logger name="edu.esiea.LunarBaseApi.controller" level="INFO" additivity="false">
+            <appender-ref ref="FICHIER" />
+            <appender-ref ref="CONSOLE" />
+        </logger>
+        <root level="WARN">
+            <appender-ref ref="FICHIER" />
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="edu.esiea.LunarBaseApi.controller" level="INFO" additivity="false">
+            <appender-ref ref="FICHIER" />
+            <appender-ref ref="CONSOLE" />
+        </logger>
+        <root level="WARN">
+            <appender-ref ref="FICHIER" />
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
+        <root level="DEBUG">
+            <appender-ref ref="CONSOLE" />
+        </root>
+    </springProfile>
+
+</configuration>

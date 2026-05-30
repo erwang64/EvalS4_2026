@@ -30,6 +30,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "Equipements", description = "Gestion du matériel et des outils de la base lunaire")
 public class EquipmentController {
 
+    private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(EquipmentController.class);
+
     private final EquipmentService equipmentService;
 
     public EquipmentController(EquipmentService equipmentService) {
@@ -41,12 +43,14 @@ public class EquipmentController {
     @Operation(summary = "Création d'un Équipement", description = "Accessible aux rôles : ADMIN")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<EquipmentResponse> createEquipment(@RequestBody EquipmentRequest request) throws EndPointException {
+        LOGGER.debug("POST /api/equipments");
         try {
             Equipment entityToCreate = EquipmentMapper.toEntity(request);
             Equipment createdEntity = equipmentService.addEquipment(entityToCreate, request.getLunarBaseId());
+            LOGGER.info("Équipement {} créé (201 CREATED)", createdEntity.getEquipmentId());
             return ResponseEntity.status(HttpStatus.CREATED).body(EquipmentMapper.toResponse(createdEntity));
         } catch (ServiceException e) {
-            // Assurez-vous d'avoir ajouté EQUIPMENT dans votre enum ResourceType
+            LOGGER.error("Erreur lors de la création d'un équipement", e);
             throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.EQUIPMENT, e);
         }
     }
@@ -56,10 +60,13 @@ public class EquipmentController {
     @Operation(summary = "Récupérer un équipement par son ID", description = "Accessible aux rôles : USER, ADMIN")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<EquipmentResponse> getEquipmentById(@PathVariable("id") int id) throws EndPointException {
+        LOGGER.debug("GET /api/equipments/{}", id);
         try {
             Equipment equipment = equipmentService.getEquipmentById(id);
+            LOGGER.info("Équipement {} récupéré (200 OK)", id);
             return ResponseEntity.ok(EquipmentMapper.toResponse(equipment));
         } catch (ServiceException e) {
+            LOGGER.error("Équipement {} introuvable", id, e);
             throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.EQUIPMENT, e);
         }
     }
@@ -69,6 +76,7 @@ public class EquipmentController {
     @Operation(summary = "Récupérer tous les équipements", description = "Accessible aux rôles : USER, ADMIN")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<List<EquipmentResponse>> getAllEquipments() {
+        LOGGER.debug("GET /api/equipments/all");
         Iterable<Equipment> equipments = equipmentService.getAllEquipments();
         List<EquipmentResponse> responseList = new ArrayList<>();
         
@@ -76,6 +84,7 @@ public class EquipmentController {
             responseList.add(EquipmentMapper.toResponse(eq));
         }
         
+        LOGGER.info("{} équipement(s) récupéré(s) (200 OK)", responseList.size());
         return ResponseEntity.ok(responseList);
     }
 
@@ -86,11 +95,14 @@ public class EquipmentController {
     public ResponseEntity<EquipmentResponse> updateEquipment(
             @PathVariable("id") int id, 
             @RequestBody EquipmentRequest request) throws EndPointException {
+        LOGGER.debug("PUT /api/equipments/{}", id);
         try {
             Equipment equipmentDetails = EquipmentMapper.toEntity(request);
             Equipment updatedEquipment = equipmentService.updateEquipment(id, equipmentDetails);
+            LOGGER.info("Équipement {} mis à jour (200 OK)", id);
             return ResponseEntity.ok(EquipmentMapper.toResponse(updatedEquipment));
         } catch (ServiceException e) {
+            LOGGER.error("Erreur lors de la mise à jour de l'équipement {}", id, e);
             throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.EQUIPMENT, e);
         }
     }
@@ -100,10 +112,13 @@ public class EquipmentController {
     @Operation(summary = "Suppression d'un équipement", description = "Accessible aux rôles : ADMIN")
     @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("id") int id) throws EndPointException {
+        LOGGER.debug("DELETE /api/equipments/{}", id);
         try {
             equipmentService.deleteEquipment(id);
+            LOGGER.info("Équipement {} supprimé (204 NO_CONTENT)", id);
             return ResponseEntity.noContent().build();
         } catch (ServiceException e) {
+            LOGGER.error("Erreur lors de la suppression de l'équipement {}", id, e);
             throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.EQUIPMENT, e);
         }
     }

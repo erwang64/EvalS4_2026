@@ -11,6 +11,8 @@ import edu.esiea.LunarBaseApi.repository.LunarBaseRepository;
 @Service
 public class EquipmentService {
 
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(EquipmentService.class);
+
 	private final EquipmentRepository equipmentRepo;
     private final LunarBaseRepository lunarBaseRepo;
 
@@ -20,6 +22,7 @@ public class EquipmentService {
     }
 
     public Equipment addEquipment(Equipment newEquipment, Integer lunarBaseId) throws ServiceException {
+        LOGGER.debug("addEquipment");
         if (lunarBaseId != null && lunarBaseId > 0) {
             LunarBase base = lunarBaseRepo.findById(lunarBaseId)
                     .orElseThrow(() -> new ServiceException("Impossible d'affecterLa base n'existe pas"));
@@ -32,15 +35,18 @@ public class EquipmentService {
     }
     
     public Equipment getEquipmentById(int id) throws ServiceException {
+        LOGGER.debug("getEquipmentById");
         return equipmentRepo.findById(id)
                 .orElseThrow(() -> new ServiceException("Équipement non trouvé avec l'ID"));
     }
 
     public Iterable<Equipment> getAllEquipments() {
+        LOGGER.debug("getAllEquipments");
         return equipmentRepo.findAll();
     }
 
     public Equipment updateEquipment(int id, Equipment equipmentDetails) throws ServiceException {
+        LOGGER.debug("updateEquipment");
         Equipment existingEquipment = getEquipmentById(id);
         
         existingEquipment.setNameEquiment(equipmentDetails.getNameEquiment());
@@ -50,6 +56,7 @@ public class EquipmentService {
     }
 
     public void deleteEquipment(int id) throws ServiceException {
+        LOGGER.debug("deleteEquipment");
         Equipment existingEquipment = getEquipmentById(id);
         equipmentRepo.delete(existingEquipment);
     }

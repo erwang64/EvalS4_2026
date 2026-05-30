@@ -12,6 +12,8 @@ import edu.esiea.LunarBaseApi.repository.LunarBaseRepository;
 @Service
 public class CrewMemberService {
 
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(CrewMemberService.class);
+
 	private final CrewMemberRepository crewMemberRepo;
     private final LunarBaseRepository lunarBaseRepo;
 
@@ -21,6 +23,7 @@ public class CrewMemberService {
     }
 
     public CrewMember addCrewMember(CrewMember newMember, Integer lunarBaseId) throws ServiceException {
+        LOGGER.debug("addCrewMember");
         if (lunarBaseId != null && lunarBaseId > 0) {
             LunarBase base = lunarBaseRepo.findById(lunarBaseId)
                     .orElseThrow(() -> new ServiceException("Impossible d'affecter : La base n'existe pas"));
@@ -42,15 +45,18 @@ public class CrewMemberService {
     }
     
     public CrewMember getCrewMemberById(int id) throws ServiceException {
+        LOGGER.debug("getCrewMemberById");
         return crewMemberRepo.findById(id)
                 .orElseThrow(() -> new ServiceException("Membre d'équipage non trouvé avec l'ID"));
     }
 
     public Iterable<CrewMember> getAllCrewMembers() {
+        LOGGER.debug("getAllCrewMembers");
         return crewMemberRepo.findAll();
     }
 
     public CrewMember updateCrewMember(int id, CrewMember memberDetails) throws ServiceException {
+        LOGGER.debug("updateCrewMember");
         CrewMember existingMember = getCrewMemberById(id); 
         
         existingMember.setFirstName(memberDetails.getFirstName());
@@ -63,6 +69,7 @@ public class CrewMemberService {
     }
 
     public void deleteCrewMember(int id) throws ServiceException {
+        LOGGER.debug("deleteCrewMember");
         CrewMember existingMember = getCrewMemberById(id);
         crewMemberRepo.delete(existingMember);
     }

@@ -11,6 +11,8 @@ import edu.esiea.LunarBaseApi.repository.UserRepository;
 @Service
 public class UserService {
 
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(UserService.class);
+
 	private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder; 
 
@@ -21,6 +23,7 @@ public class UserService {
     }
 
     public User register(User newUser) throws ServiceException {
+        LOGGER.debug("register");
         if (userRepository.existsByUsername(newUser.getUsername())) {
             throw new ServiceException("Erreur : Le pseudo est déjà utilisé.");
         }
@@ -33,6 +36,7 @@ public class UserService {
     }
 
     public User loadUserByUsername(String username) throws ServiceException {
+        LOGGER.debug("loadUserByUsername");
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new ServiceException("Utilisateur introuvable."));
     }

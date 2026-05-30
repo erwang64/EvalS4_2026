@@ -36,3 +36,7 @@ build/
 
 data/
 *.db
+
+### Logs ###
+logs/
+run-dev.log

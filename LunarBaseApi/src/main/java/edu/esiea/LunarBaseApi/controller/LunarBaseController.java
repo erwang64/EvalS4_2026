@@ -31,6 +31,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 @RequestMapping("/api/lunar-bases")
 public class LunarBaseController {
 	
+	private static final org.slf4j.Logger LOGGER = org.slf4j.LoggerFactory.getLogger(LunarBaseController.class);
+	
 	private final LunarBaseService service;
 	
 	public LunarBaseController(LunarBaseService service) {
@@ -42,6 +44,7 @@ public class LunarBaseController {
 	@Operation(summary = "Création d'une base lunaire", description = "Accessible aux rôles : ADMIN")
 	@SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<LunarBaseResponse> createLunarBase(@RequestBody LunarBaseRequest request) throws EndPointException {
+        LOGGER.debug("POST /api/lunar-bases");
         
         // 1. Traduction
         LunarBase baseToCreate = LunarBaseMapper.toEntity(request);
@@ -50,6 +53,7 @@ public class LunarBaseController {
         try {
             baseToCreate = this.service.createLunarBase(baseToCreate);
         } catch (ServiceException e) {
+            LOGGER.error("Erreur lors de la création d'une base lunaire", e);
             throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.LUNAR_BASE, e);
         }
         
@@ -61,6 +65,7 @@ public class LunarBaseController {
                 .toUri();
         
         // 4. Renvoi du résultat avec l'URI
+        LOGGER.info("Base lunaire {} créée (201 CREATED)", baseToCreate.getLunarBaseId());
         return ResponseEntity.created(uri).body(LunarBaseMapper.toResponse(baseToCreate));
     }
 	
@@ -69,6 +74,7 @@ public class LunarBaseController {
 	@Operation(summary = "Récupérer une base lunaire par son ID", description = "Accessible aux rôles : USER, ADMIN")
 	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<LunarBaseResponse> getLunarBaseById(@PathVariable("id") int id) throws EndPointException {
+	    LOGGER.debug("GET /api/lunar-bases/{}", id);
 	    try {
 	        // 1. On demande au service
 	        LunarBase base = service.getBaseById(id);
@@ -77,10 +83,12 @@ public class LunarBaseController {
 	        LunarBaseResponse response = LunarBaseMapper.toResponse(base);
 	        
 	        // 3. On renvoie 200 OK
+	        LOGGER.info("Base lunaire {} récupérée (200 OK)", id);
 	        return ResponseEntity.ok(response);
 	        
 	    } catch (ServiceException e) {
 	        // Si l'ID n'existe pas, on renvoie une 404 (Not Found)
+	        LOGGER.error("Base lunaire {} introuvable", id, e);
 	        throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e);
 	    }
 	}
@@ -90,6 +98,7 @@ public class LunarBaseController {
 	@Operation(summary = "Récupérer toutes les bases lunaires", description = "Accessible aux rôles : USER, ADMIN")
 	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<java.util.List<LunarBaseResponse>> getAllLunarBases() {
+		LOGGER.debug("GET /api/lunar-bases/all");
 		// 1. On récupère toutes les entités
 		Iterable<LunarBase> bases = service.getAllBases();
 		
@@ -102,6 +111,7 @@ public class LunarBaseController {
 		}
 		
 		// 4. On renvoie la liste avec un code 200 OK
+		LOGGER.info("{} base(s) lunaire(s) récupérée(s) (200 OK)", responseList.size());
 		return ResponseEntity.ok(responseList);
 	}
 	
@@ -112,7 +122,7 @@ public class LunarBaseController {
 	public ResponseEntity<LunarBaseResponse> updateLunarBase(
 			@PathVariable("id") int id, 
 			@RequestBody LunarBaseRequest request) throws EndPointException {
-		
+		LOGGER.debug("PUT /api/lunar-bases/{}", id);
 		try {
 			// 1. On traduit le JSON reçu en Entité "brouillon"
 			LunarBase baseDetails = LunarBaseMapper.toEntity(request);
@@ -121,10 +131,12 @@ public class LunarBaseController {
 			LunarBase updatedBase = service.updateLunarBase(id, baseDetails);
 			
 			// 3. On traduit le résultat et on renvoie un 200 OK
+			LOGGER.info("Base lunaire {} mise à jour (200 OK)", id);
 			return ResponseEntity.ok(LunarBaseMapper.toResponse(updatedBase));
 			
 		} catch (ServiceException e) {
 			// Si le service refuse (ID inconnu ou nom déjà pris)
+			LOGGER.error("Erreur lors de la mise à jour de la base lunaire {}", id, e);
 			throw new EndPointException(HttpStatus.BAD_REQUEST, e.getMessage(), ResourceType.LUNAR_BASE, e);
 		}
 	}
@@ -134,11 +146,14 @@ public class LunarBaseController {
 	@Operation(summary = "Suppression d'une base lunaire", description = "Accessible aux rôles : ADMIN")
 	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<Void> deleteLunarBase(@PathVariable("id") int id) throws EndPointException {
+		LOGGER.debug("DELETE /api/lunar-bases/{}", id);
 		try {
 			service.deleteLunarBase(id);
+			LOGGER.info("Base lunaire {} supprimée (204 NO_CONTENT)", id);
 			return ResponseEntity.noContent().build();
 			
 		} catch (ServiceException e) {
+			LOGGER.error("Erreur lors de la suppression de la base lunaire {}", id, e);
 			throw new EndPointException(HttpStatus.NOT_FOUND, e.getMessage(), ResourceType.LUNAR_BASE, e);
 		}
 	}
