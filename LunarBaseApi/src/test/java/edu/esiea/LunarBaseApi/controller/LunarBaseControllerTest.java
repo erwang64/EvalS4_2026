@@ -1,11 +1,13 @@
 package edu.esiea.LunarBaseApi.controller;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -21,20 +23,20 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import edu.esiea.LunarBaseApi.exception.ServiceException;
 import edu.esiea.LunarBaseApi.model.LunarBase;
 import edu.esiea.LunarBaseApi.service.LunarBaseService;
 
-@WebMvcTest(LunarBaseController.class) // On teste uniquement ce contrôleur spécifique
-@AutoConfigureMockMvc(addFilters = false) // On désactive les filtres de sécurité (JWT) pour tester le fonctionnel
-@ActiveProfiles("test") // On utilise le profil de test
+@WebMvcTest(LunarBaseController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@ActiveProfiles("test")
 public class LunarBaseControllerTest {
 
     @Autowired
-    private MockMvc mockMvc; // L'outil qui simule les requêtes HTTP
+    private MockMvc mockMvc;
 
-    // Dans Spring Boot 3.4+, @MockBean est remplacé par @MockitoBean (comme sur la slide 48 de ton cours !)
-    @MockitoBean 
-    private LunarBaseService lunarBaseService; 
+    @MockitoBean
+    private LunarBaseService lunarBaseService;
 
     private LunarBase baseTest;
 
@@ -49,25 +51,17 @@ public class LunarBaseControllerTest {
         baseTest.setSector("Secteur Nord");
     }
 
-    // ==========================================
-    // TEST GET BY ID
-    // ==========================================
     @Test
     void shouldGetBaseById() throws Exception {
-        // 1. Config du Mock
         when(lunarBaseService.getBaseById(1)).thenReturn(baseTest);
 
-        // 2. Appel et Assertions
         mockMvc.perform(get("/api/lunar-bases/1"))
-               .andExpect(status().isOk()) // Vérifie le statut HTTP 200
-               .andExpect(jsonPath("$.name").value("Base Alpha")); // Vérifie le contenu JSON
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.name").value("Base Alpha"));
 
         verify(lunarBaseService).getBaseById(1);
     }
 
-    // ==========================================
-    // TEST GET ALL
-    // ==========================================
     @Test
     void shouldGetAllBases() throws Exception {
         LunarBase base2 = new LunarBase();
@@ -79,21 +73,17 @@ public class LunarBaseControllerTest {
 
         mockMvc.perform(get("/api/lunar-bases/all"))
                .andExpect(status().isOk())
-               .andExpect(jsonPath("$.length()").value(2)) // Vérifie qu'on récupère bien 2 bases
+               .andExpect(jsonPath("$.length()").value(2))
                .andExpect(jsonPath("$[0].name").value("Base Alpha"))
                .andExpect(jsonPath("$[1].name").value("Base Beta"));
 
         verify(lunarBaseService).getAllBases();
     }
 
-    // ==========================================
-    // TEST CREATE (POST)
-    // ==========================================
     @Test
     void shouldCreateBase() throws Exception {
         when(lunarBaseService.createLunarBase(any(LunarBase.class))).thenReturn(baseTest);
 
-        // Le JSON "brut" que l'on simule d'envoyer, grâce à l'astuce des triples guillemets de ton cours
         String json = """
                 {
                     "name": "Base Alpha",
@@ -107,20 +97,68 @@ public class LunarBaseControllerTest {
         mockMvc.perform(post("/api/lunar-bases")
                .contentType(MediaType.APPLICATION_JSON)
                .content(json))
-               .andExpect(status().isCreated()); // Vérifie le statut 201 CREATED
+               .andExpect(status().isCreated());
 
         verify(lunarBaseService).createLunarBase(any(LunarBase.class));
     }
 
-    // ==========================================
-    // TEST DELETE
-    // ==========================================
+    @Test
+    void shouldUpdateBase() throws Exception {
+        when(lunarBaseService.updateLunarBase(eq(1), any(LunarBase.class))).thenReturn(baseTest);
+
+        String json = """
+                {
+                    "name": "Base Alpha",
+                    "posX": 15,
+                    "posY": 42,
+                    "maximalCapacity": 99,
+                    "sector": "Secteur Sud"
+                }
+                """;
+
+        mockMvc.perform(put("/api/lunar-bases/1")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(json))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$.name").value("Base Alpha"));
+
+        verify(lunarBaseService).updateLunarBase(eq(1), any(LunarBase.class));
+    }
+
     @Test
     void shouldDeleteBase() throws Exception {
-        // Simuler un appel DELETE sur /api/lunar-bases/1
         mockMvc.perform(delete("/api/lunar-bases/1"))
-               .andExpect(status().isNoContent()); // Vérifie le statut 204 NO CONTENT
+               .andExpect(status().isNoContent());
 
         verify(lunarBaseService).deleteLunarBase(1);
+    }
+
+    @Test
+    void shouldReturn404WhenBaseNotFound() throws Exception {
+        when(lunarBaseService.getBaseById(99)).thenThrow(new ServiceException("Introuvable"));
+
+        mockMvc.perform(get("/api/lunar-bases/99"))
+               .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturn400WhenCreateRefusedByService() throws Exception {
+        when(lunarBaseService.createLunarBase(any(LunarBase.class)))
+                .thenThrow(new ServiceException("Création refusée"));
+
+        String json = """
+                {
+                    "name": "Base Alpha",
+                    "posX": 15,
+                    "posY": 42,
+                    "maximalCapacity": 50,
+                    "sector": "Secteur Nord"
+                }
+                """;
+
+        mockMvc.perform(post("/api/lunar-bases")
+               .contentType(MediaType.APPLICATION_JSON)
+               .content(json))
+               .andExpect(status().isBadRequest());
     }
 }

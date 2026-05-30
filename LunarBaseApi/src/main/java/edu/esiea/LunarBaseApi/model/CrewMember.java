@@ -25,10 +25,10 @@ public class CrewMember {
 	private int crewMemberId;
 	
 	@Column(name = "FirstName", nullable = false)
-	private String FirstName;
+	private String firstName;
 	
 	@Column(name = "LastName", nullable = false)
-	private String LastName;
+	private String lastName;
 	
 	@Enumerated(EnumType.STRING)
 	@Column(name = "CrewrRole")
@@ -47,19 +47,19 @@ public class CrewMember {
 	}
 
 	public String getFirstName() {
-		return FirstName;
+		return firstName;
 	}
 
 	public void setFirstName(String firstName) {
-		FirstName = firstName;
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
-		return LastName;
+		return lastName;
 	}
 
 	public void setLastName(String lastName) {
-		LastName = lastName;
+		this.lastName = lastName;
 	}
 
 	public CrewrRole getCrewRole() {

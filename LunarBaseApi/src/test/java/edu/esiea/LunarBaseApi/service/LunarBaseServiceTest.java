@@ -20,20 +20,19 @@ import edu.esiea.LunarBaseApi.exception.ServiceException;
 import edu.esiea.LunarBaseApi.model.LunarBase;
 import edu.esiea.LunarBaseApi.repository.LunarBaseRepository;
 
-@ExtendWith(MockitoExtension.class) 
+@ExtendWith(MockitoExtension.class)
 public class LunarBaseServiceTest {
 
     @Mock
-    private LunarBaseRepository lunarBaseRepo; // On crée le faux Repository (le Mock)
+    private LunarBaseRepository lunarBaseRepo;
 
     @InjectMocks
-    private LunarBaseService lunarBaseService; // Le vrai Service qu'on teste, dans lequel Spring va injecter le faux Repo
+    private LunarBaseService lunarBaseService;
 
     private LunarBase baseTest;
 
     @BeforeEach
     void setup() {
-        // On prépare une base de test pour nos scénarios
         baseTest = new LunarBase();
         baseTest.setLunarBaseId(1);
         baseTest.setName("Base Alpha");
@@ -43,55 +42,135 @@ public class LunarBaseServiceTest {
         baseTest.setSector("Secteur Nord");
     }
 
-    // ==========================================
-    // TEST DE LECTURE (GET)
-    // ==========================================
     @Test
     public void testGetBaseById_Success() throws ServiceException {
-        // 1. CONFIGURATION DU MOCK : On lui dit quoi répondre
         when(lunarBaseRepo.findById(1)).thenReturn(Optional.of(baseTest));
 
-        // 2. ACT : On appelle notre vrai service
         LunarBase result = lunarBaseService.getBaseById(1);
 
-        // 3. ASSERT : On vérifie que le service nous a bien retourné la base
         assertNotNull(result);
         assertEquals("Base Alpha", result.getName());
-        
-        // Vérification de sécurité : le service a-t-il bien appelé le repo ?
         verify(lunarBaseRepo).findById(1);
     }
 
     @Test
     public void testGetBaseById_NotFound() {
-        // 1. CONFIGURATION DU MOCK : Le repo fait semblant de ne rien trouver (Optional vide)
         when(lunarBaseRepo.findById(99)).thenReturn(Optional.empty());
 
-        // 2. ACT & ASSERT : Le service DOIT lever notre ServiceException personnalisée
         assertThrows(ServiceException.class, () -> {
             lunarBaseService.getBaseById(99);
         }, "Le service doit lever une exception si l'ID n'existe pas");
-        
+
         verify(lunarBaseRepo).findById(99);
     }
 
- // ==========================================
-    // TEST DE CREATION (POST)
-    // ==========================================
     @Test
     public void testCreateLunarBase_Success() throws ServiceException {
-        baseTest.setLunarBaseId(0); 
+        baseTest.setLunarBaseId(0);
 
-        // 1. CONFIGURATION DU MOCK 
-        when(lunarBaseRepo.findByName("Base Alpha")).thenReturn(Optional.empty()); 
+        when(lunarBaseRepo.findByName("Base Alpha")).thenReturn(Optional.empty());
+        when(lunarBaseRepo.findByPosXAndPosY(15, 42)).thenReturn(Optional.empty());
         when(lunarBaseRepo.save(any(LunarBase.class))).thenReturn(baseTest);
 
-        // 2. ACT
         LunarBase createdBase = lunarBaseService.createLunarBase(baseTest);
 
-        // 3. ASSERT
         assertNotNull(createdBase);
         assertEquals("Base Alpha", createdBase.getName());
-        verify(lunarBaseRepo).save(baseTest); 
+        verify(lunarBaseRepo).save(baseTest);
+    }
+
+    @Test
+    public void testCreateLunarBase_IdDejaDefini() {
+        baseTest.setLunarBaseId(5);
+
+        assertThrows(ServiceException.class, () -> {
+            lunarBaseService.createLunarBase(baseTest);
+        }, "Créer une base avec un ID déjà défini doit être impossible");
+    }
+
+    @Test
+    public void testCreateLunarBase_NomDejaPris() {
+        baseTest.setLunarBaseId(0);
+        when(lunarBaseRepo.findByName("Base Alpha")).thenReturn(Optional.of(baseTest));
+
+        assertThrows(ServiceException.class, () -> {
+            lunarBaseService.createLunarBase(baseTest);
+        }, "Deux bases avec le même nom ne devraient pas être possibles");
+    }
+
+    @Test
+    public void testCreateLunarBase_PositionOccupee() {
+        baseTest.setLunarBaseId(0);
+        when(lunarBaseRepo.findByName("Base Alpha")).thenReturn(Optional.empty());
+        when(lunarBaseRepo.findByPosXAndPosY(15, 42)).thenReturn(Optional.of(baseTest));
+
+        assertThrows(ServiceException.class, () -> {
+            lunarBaseService.createLunarBase(baseTest);
+        }, "Créer une base à une position déjà occupée doit être impossible");
+    }
+
+    @Test
+    public void testUpdateLunarBase_Success() throws ServiceException {
+        when(lunarBaseRepo.findById(1)).thenReturn(Optional.of(baseTest));
+        when(lunarBaseRepo.save(any(LunarBase.class))).thenReturn(baseTest);
+
+        LunarBase nouvellesDonnees = new LunarBase();
+        nouvellesDonnees.setName("Base Alpha");
+        nouvellesDonnees.setSector("Secteur Sud");
+        nouvellesDonnees.setMaximalCapacity(99);
+
+        LunarBase result = lunarBaseService.updateLunarBase(1, nouvellesDonnees);
+
+        assertNotNull(result);
+        verify(lunarBaseRepo).save(baseTest);
+    }
+
+    @Test
+    public void testUpdateLunarBase_NotFound() {
+        when(lunarBaseRepo.findById(99)).thenReturn(Optional.empty());
+
+        assertThrows(ServiceException.class, () -> {
+            lunarBaseService.updateLunarBase(99, baseTest);
+        }, "Modifier une base inexistante doit être impossible");
+    }
+
+    @Test
+    public void testUpdateLunarBase_NomDejaPris() {
+        when(lunarBaseRepo.findById(1)).thenReturn(Optional.of(baseTest));
+        when(lunarBaseRepo.findByName("Base Beta")).thenReturn(Optional.of(new LunarBase()));
+
+        LunarBase nouvellesDonnees = new LunarBase();
+        nouvellesDonnees.setName("Base Beta");
+
+        assertThrows(ServiceException.class, () -> {
+            lunarBaseService.updateLunarBase(1, nouvellesDonnees);
+        }, "Renommer une base vers un nom déjà pris doit être impossible");
+    }
+
+    @Test
+    public void testDeleteLunarBase_Success() throws ServiceException {
+        when(lunarBaseRepo.existsById(1)).thenReturn(true);
+
+        lunarBaseService.deleteLunarBase(1);
+
+        verify(lunarBaseRepo).deleteById(1);
+    }
+
+    @Test
+    public void testDeleteLunarBase_NotFound() {
+        when(lunarBaseRepo.existsById(99)).thenReturn(false);
+
+        assertThrows(ServiceException.class, () -> {
+            lunarBaseService.deleteLunarBase(99);
+        }, "Supprimer une base inexistante doit être impossible");
+    }
+
+    @Test
+    public void testGetAllBases() {
+        when(lunarBaseRepo.findAll()).thenReturn(new java.util.ArrayList<LunarBase>());
+
+        lunarBaseService.getAllBases();
+
+        verify(lunarBaseRepo).findAll();
     }
 }

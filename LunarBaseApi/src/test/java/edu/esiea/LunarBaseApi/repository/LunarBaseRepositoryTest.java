@@ -12,33 +12,30 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import edu.esiea.LunarBaseApi.model.LunarBase;
 
-@DataJpaTest 
-@ActiveProfiles("test") 
+@DataJpaTest
+@ActiveProfiles("test")
 public class LunarBaseRepositoryTest {
 
     @Autowired
     private LunarBaseRepository lunarBaseRepo;
 
-    // Constantes pour nos données de test
     private static final String BASE_NAME = "Base Alpha";
     private static final int BASE_POS_X = 15;
     private static final int BASE_POS_Y = 42;
     private static final int BASE_CAPACITY = 50;
-    private static final String BASE_SECTOR = "Secteur Nord"; 
+    private static final String BASE_SECTOR = "Secteur Nord";
 
     @BeforeEach
     void setup() {
-        // Nettoyage par précaution
         lunarBaseRepo.deleteAll();
-        
-        // Création et sauvegarde d'une base de test
+
         LunarBase base = new LunarBase();
         base.setName(BASE_NAME);
         base.setPosX(BASE_POS_X);
         base.setPosY(BASE_POS_Y);
         base.setMaximalCapacity(BASE_CAPACITY);
-        base.setSector(BASE_SECTOR); 
-        
+        base.setSector(BASE_SECTOR);
+
         lunarBaseRepo.save(base);
     }
 
@@ -67,21 +64,19 @@ public class LunarBaseRepositoryTest {
 
     @Test
     public void testEntityRestrictions() {
-        // 1. Test de création avec un nom nul
         LunarBase baseNullName = new LunarBase();
         baseNullName.setName(null);
         baseNullName.setPosX(100);
         baseNullName.setPosY(200);
         baseNullName.setMaximalCapacity(10);
-        baseNullName.setSector("Secteur Sud"); // <-- CORRECTION ICI (Il faut que le reste soit valide pour tester spécifiquement le null sur le nom)
-        
+        baseNullName.setSector("Secteur Sud");
+
         assertThrows(DataIntegrityViolationException.class, () -> {
-            lunarBaseRepo.saveAndFlush(baseNullName); 
+            lunarBaseRepo.saveAndFlush(baseNullName);
         }, "Le nom d'une base ne devrait pas être nul");
 
-        // 2. Test de création avec un nom déjà pris
         LunarBase baseDuplicate = new LunarBase();
-        baseDuplicate.setName(BASE_NAME); 
+        baseDuplicate.setName(BASE_NAME);
         baseDuplicate.setPosX(100);
         baseDuplicate.setPosY(200);
         baseDuplicate.setMaximalCapacity(10);
